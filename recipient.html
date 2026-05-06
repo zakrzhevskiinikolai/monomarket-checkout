@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#F2F3F5" />
+    <title>Отримувач · monoМаркет</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app" id="app"></div>
+
+    <script src="app.js"></script>
+    <script>
+      function avatarInner(r) {
+        if (r.avatar === "photo") {
+          // simple drawn avatar (face silhouette)
+          return `<svg viewBox="0 0 44 44" width="44" height="44"><defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#D8C7B6"/><stop offset="1" stop-color="#7A5C40"/></linearGradient></defs><rect width="44" height="44" fill="url(#g)"/><circle cx="22" cy="18" r="7" fill="#2A1F14"/><path d="M9 44 Q 22 28 35 44" fill="#2A1F14"/></svg>`;
+        }
+        return `<span>${r.initials || ""}</span>`;
+      }
+
+      function render() {
+        document.getElementById("app").innerHTML = `
+          ${statusBar()}
+          <div class="header">
+            <button class="header__back" data-action="back">${ICONS.arrow}</button>
+            <div style="flex:1"></div>
+          </div>
+
+          <div class="content">
+            <h1 style="font-size:30px;font-weight:800;letter-spacing:-0.5px;margin:-8px 4px 16px">Отримувач</h1>
+
+            <div class="recipient-list">
+              ${state.recipients
+                .map(
+                  (r) => `
+                <div class="recipient-card" data-pick="${r.id}" data-active="${r.id === state.selectedRecipientId}">
+                  <div class="avatar avatar--${r.avatar}" style="overflow:hidden;${r.avatar === "photo" ? "padding:0;" : ""}">
+                    ${avatarInner(r)}
+                  </div>
+                  <div class="recipient-row__main">
+                    <p class="recipient-row__name">${r.name}</p>
+                    <p class="recipient-row__phone">${r.phone}</p>
+                  </div>
+                </div>`
+                )
+                .join("")}
+
+              <div class="recipient-card" id="addBtn">
+                <div class="recipient-card__add">
+                  <span class="add-icon">+</span>
+                  <span>Додати нового отримувача</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      document.addEventListener("click", (e) => {
+        const pick = e.target.closest("[data-pick]");
+        if (pick) {
+          state.selectedRecipientId = pick.getAttribute("data-pick");
+          saveState(state);
+          location.href = "checkout.html";
+        }
+        if (e.target.closest("#addBtn")) {
+          toast("У прототипі: форма додавання отримувача");
+        }
+      });
+
+      render();
+    </script>
+  </body>
+</html>

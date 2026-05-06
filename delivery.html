@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#F2F3F5" />
+    <title>Відділення Нової пошти · monoМаркет</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app" id="app"></div>
+
+    <script src="app.js"></script>
+    <script>
+      function render(query = "") {
+        const q = query.trim().toLowerCase();
+        const filter = (d) => {
+          if (!q) return true;
+          return (
+            d.number.includes(q) ||
+            d.street.toLowerCase().includes(q) ||
+            d.city.toLowerCase().includes(q)
+          );
+        };
+        const recent = state.departments.filter((d) => d.recent && filter(d));
+        const others = state.departments.filter((d) => !d.recent && filter(d));
+        const city = (state.departments[0] && state.departments[0].city) || "м. Київ";
+
+        document.getElementById("app").innerHTML = `
+          ${statusBar()}
+          <div class="header">
+            <button class="header__back" data-action="back">${ICONS.arrow}</button>
+            <div style="flex:1"></div>
+          </div>
+
+          <div class="content">
+            <div style="display:flex;align-items:center;gap:10px;margin:-8px 4px 6px;">
+              <h1 style="font-size:30px;font-weight:800;letter-spacing:-0.5px;margin:0">Доставка Нова пошта</h1>
+              <span class="np-icon" style="width:32px;height:32px"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M11 4V18M4 11H18M14 7L18 11L14 15M8 7L4 11L8 15" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+            <a class="subtitle-link" href="#">${city} ${ICONS.pencil}</a>
+
+            <div class="search">
+              ${ICONS.search}
+              <input class="search__input" id="searchInput" placeholder="Адреса або номер відділення" value="${query.replace(/"/g, "&quot;")}" />
+            </div>
+
+            ${
+              recent.length
+                ? `
+              <div class="delivery-list-section">
+                <div class="delivery-list-section__label">Останні</div>
+                <div class="card" style="padding: 4px 16px">
+                  ${recent.map(deliveryItem).join("")}
+                </div>
+              </div>`
+                : ""
+            }
+
+            ${
+              others.length
+                ? `
+              <div class="delivery-list-section">
+                <div class="delivery-list-section__label">Доступні</div>
+                <div class="card" style="padding: 4px 16px">
+                  ${others.map(deliveryItem).join("")}
+                </div>
+              </div>`
+                : ""
+            }
+
+            ${
+              !recent.length && !others.length
+                ? `<p class="muted" style="text-align:center;padding:40px 0;">Нічого не знайдено</p>`
+                : ""
+            }
+          </div>
+        `;
+      }
+
+      function deliveryItem(d) {
+        return `
+          <div class="delivery-item" data-pick="${d.id}">
+            <div class="delivery-item__icon">${d.icon}</div>
+            <div class="delivery-item__main">
+              <p class="delivery-item__title">${d.isPostmat ? "Поштомат" : "Відділення"} №${d.number}</p>
+              <p class="delivery-item__addr">${d.street}</p>
+            </div>
+            <div class="delivery-item__weight">${d.weight}</div>
+          </div>`;
+      }
+
+      document.addEventListener("input", (e) => {
+        if (e.target.id === "searchInput") {
+          const v = e.target.value;
+          render(v);
+          // restore cursor
+          const inp = document.getElementById("searchInput");
+          if (inp) {
+            inp.focus();
+            inp.setSelectionRange(v.length, v.length);
+          }
+        }
+      });
+
+      document.addEventListener("click", (e) => {
+        const pick = e.target.closest("[data-pick]");
+        if (pick) {
+          state.selectedDepartmentId = pick.getAttribute("data-pick");
+          state.delivery = "department";
+          saveState(state);
+          location.href = "checkout.html";
+        }
+      });
+
+      render();
+    </script>
+  </body>
+</html>

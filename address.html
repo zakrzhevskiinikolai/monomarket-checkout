@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#F2F3F5" />
+    <title>Адреса доставки · monoМаркет</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app" id="app"></div>
+
+    <script src="app.js"></script>
+    <script>
+      function render() {
+        document.getElementById("app").innerHTML = `
+          ${statusBar()}
+          <div class="header">
+            <button class="header__back" data-action="back">${ICONS.arrow}</button>
+            <div style="flex:1"></div>
+          </div>
+
+          <div class="content">
+            <h1 style="font-size:30px;font-weight:800;letter-spacing:-0.5px;margin:-8px 4px 16px">Адреса доставки</h1>
+
+            <div class="recipient-list">
+              ${state.addresses
+                .map(
+                  (a) => `
+                <div class="recipient-card" data-pick="${a.id}" data-active="${a.id === state.selectedAddressId}">
+                  <div class="np-icon" style="background:var(--blue-bg-soft);color:var(--blue);">
+                    <svg width="20" height="20" viewBox="0 0 22 22" fill="none"><path d="M11 19C11 19 17 13.5 17 9C17 5.7 14.3 3 11 3C7.7 3 5 5.7 5 9C5 13.5 11 19 11 19Z" stroke="currentColor" stroke-width="1.7"/><circle cx="11" cy="9" r="2.3" stroke="currentColor" stroke-width="1.7"/></svg>
+                  </div>
+                  <div class="recipient-row__main">
+                    <p class="recipient-row__name">${a.street}</p>
+                    <p class="recipient-row__phone">${a.city} · ${a.note}</p>
+                  </div>
+                  <div class="address-row__chevron">${ICONS.chevron}</div>
+                </div>`
+                )
+                .join("")}
+
+              <div class="recipient-card" id="addBtn">
+                <div class="recipient-card__add">
+                  <span class="add-icon">+</span>
+                  <span>Додати нову адресу</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      document.addEventListener("click", (e) => {
+        const pick = e.target.closest("[data-pick]");
+        if (pick) {
+          state.selectedAddressId = pick.getAttribute("data-pick");
+          state.delivery = "courier";
+          saveState(state);
+          location.href = "checkout.html";
+        }
+        if (e.target.closest("#addBtn")) {
+          toast("У прототипі: форма додавання адреси");
+        }
+      });
+
+      render();
+    </script>
+  </body>
+</html>
