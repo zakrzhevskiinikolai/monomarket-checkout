@@ -3,104 +3,93 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#F2F3F5" />
+    <meta name="theme-color" content="#FFFFFF" />
     <title>Відділення Нової пошти · monoМаркет</title>
     <link rel="stylesheet" href="styles.css" />
+    <style>.app{background:#fff}</style>
   </head>
   <body>
     <div class="app" id="app"></div>
 
     <script src="app.js"></script>
     <script>
+      const DEPT_ICONS = {
+        box: "assets/icons/dep_box.png",
+        truck: "assets/icons/dep_truck.png",
+        postmat: "assets/icons/dep_postmat.png",
+      };
+
       function render(query = "") {
         const q = query.trim().toLowerCase();
-        const filter = (d) => {
-          if (!q) return true;
-          return (
-            d.number.includes(q) ||
-            d.street.toLowerCase().includes(q) ||
-            d.city.toLowerCase().includes(q)
-          );
-        };
-        const recent = state.departments.filter((d) => d.recent && filter(d));
-        const others = state.departments.filter((d) => !d.recent && filter(d));
-        const city = (state.departments[0] && state.departments[0].city) || "м. Київ";
+        const filt = (d) => !q || d.number.includes(q) || d.street.toLowerCase().includes(q) || d.city.toLowerCase().includes(q);
+        const recent = state.departments.filter((d) => d.recent && filt(d));
+        const others = state.departments.filter((d) => !d.recent && filt(d));
+        const city = state.departments[0]?.city || "м. Київ";
 
         document.getElementById("app").innerHTML = `
           ${statusBar()}
-          <div class="header">
-            <button class="header__back" data-action="back">${ICONS.arrow}</button>
-            <div style="flex:1"></div>
+          <div class="header-back">
+            <button class="header-back__btn" data-action="back">${ICONS.arrow_back}</button>
           </div>
 
-          <div class="content">
-            <div style="display:flex;align-items:center;gap:10px;margin:-8px 4px 6px;">
-              <h1 style="font-size:30px;font-weight:800;letter-spacing:-0.5px;margin:0">Доставка Нова пошта</h1>
-              <span class="np-icon" style="width:32px;height:32px"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M11 4V18M4 11H18M14 7L18 11L14 15M8 7L4 11L8 15" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            </div>
-            <a class="subtitle-link" href="#">${city} ${ICONS.pencil}</a>
+          <h1 class="app-title" style="padding:0 16px">
+            <span style="display:flex;align-items:center;gap:10px;">
+              Доставка Нова пошта
+              <span class="np-icon" style="width:24px;height:24px">${ICONS.np}</span>
+            </span>
+          </h1>
 
-            <div class="search">
-              ${ICONS.search}
-              <input class="search__input" id="searchInput" placeholder="Адреса або номер відділення" value="${query.replace(/"/g, "&quot;")}" />
-            </div>
+          <a class="subtitle-link" href="#" id="cityChange">${city}<span style="display:inline-flex;width:14px;height:14px;align-items:center;justify-content:center">${ICONS.pencil}</span></a>
 
-            ${
-              recent.length
-                ? `
-              <div class="delivery-list-section">
-                <div class="delivery-list-section__label">Останні</div>
-                <div class="card" style="padding: 4px 16px">
+          <div class="search">
+            ${ICONS.search}
+            <input class="search__input" id="searchInput" placeholder="Адреса або номер відділення" value="${query.replace(/"/g, '&quot;')}">
+          </div>
+
+          <div class="content content--no-pad">
+            ${recent.length ? `
+              <div class="dl-section">
+                <div class="dl-section__label">Останні</div>
+                <div class="dl-list">
                   ${recent.map(deliveryItem).join("")}
                 </div>
-              </div>`
-                : ""
-            }
-
-            ${
-              others.length
-                ? `
-              <div class="delivery-list-section">
-                <div class="delivery-list-section__label">Доступні</div>
-                <div class="card" style="padding: 4px 16px">
+              </div>` : ""}
+            ${others.length ? `
+              <div class="dl-section">
+                <div class="dl-section__label">Доступні</div>
+                <div class="dl-list">
                   ${others.map(deliveryItem).join("")}
                 </div>
-              </div>`
-                : ""
-            }
-
-            ${
-              !recent.length && !others.length
-                ? `<p class="muted" style="text-align:center;padding:40px 0;">Нічого не знайдено</p>`
-                : ""
-            }
+              </div>` : ""}
+            ${(!recent.length && !others.length) ? `<p style="text-align:center;padding:40px 0;color:var(--text-secondary)">Нічого не знайдено</p>` : ""}
+            <div style="height:24px"></div>
           </div>
+          <div class="home-indicator"></div>
         `;
+
+        // restore focus
+        const inp = document.getElementById("searchInput");
+        if (inp && document.activeElement !== inp && query) {
+          inp.focus();
+          inp.setSelectionRange(query.length, query.length);
+        }
       }
 
       function deliveryItem(d) {
+        const title = d.isPostmat ? `Поштомат №${d.number}` : `Відділення №${d.number}`;
         return `
-          <div class="delivery-item" data-pick="${d.id}">
-            <div class="delivery-item__icon">${d.icon}</div>
-            <div class="delivery-item__main">
-              <p class="delivery-item__title">${d.isPostmat ? "Поштомат" : "Відділення"} №${d.number}</p>
-              <p class="delivery-item__addr">${d.street}</p>
+          <div class="dl-item" data-pick="${d.id}">
+            <div class="dl-item__icon"><img src="${DEPT_ICONS[d.icon]}" alt=""></div>
+            <div class="dl-item__main">
+              <p class="dl-item__title">${title}</p>
+              <p class="dl-item__addr">${d.street}</p>
             </div>
-            <div class="delivery-item__weight">${d.weight}</div>
+            <div class="dl-item__weight">${d.weight}</div>
           </div>`;
       }
 
       document.addEventListener("input", (e) => {
-        if (e.target.id === "searchInput") {
-          const v = e.target.value;
-          render(v);
-          // restore cursor
-          const inp = document.getElementById("searchInput");
-          if (inp) {
-            inp.focus();
-            inp.setSelectionRange(v.length, v.length);
-          }
-        }
+        if (e.target.id === "searchInput") render(e.target.value);
       });
 
       document.addEventListener("click", (e) => {
@@ -111,6 +100,7 @@
           saveState(state);
           location.href = "checkout.html";
         }
+        if (e.target.closest("#cityChange")) { e.preventDefault(); toast("У прототипі: вибір міста"); }
       });
 
       render();

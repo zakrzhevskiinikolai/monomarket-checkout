@@ -3,21 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#1F70F5" />
+    <meta name="theme-color" content="#3395FF" />
     <title>Чекаут · monoМаркет</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="app app--blue" id="app"></div>
+    <div class="app app--blue-header" id="app"></div>
 
     <script src="app.js"></script>
     <script>
       function render() {
         const sel = selectedProducts();
-        if (sel.length === 0) {
-          location.href = "index.html";
-          return;
-        }
+        if (sel.length === 0) { location.href = "index.html"; return; }
         const total = cartTotal();
         const isParts = state.payment === "parts";
         const isCourier = state.delivery === "courier";
@@ -25,30 +22,31 @@
         const dep = getSelectedDepartment();
         const recip = getSelectedRecipient();
 
-        const ctaText = isParts ? `Сплатити частинами: ${fmt(firstInstallment())}` : "Продовжити";
+        const ctaText = isParts
+          ? `Сплатити частинами: ${fmtSum(firstInstallment())}`
+          : "Продовжити";
 
         document.getElementById("app").innerHTML = `
-          ${statusBar(true)}
-          ${backHeader({ title: "Ваше замовлення", white: true })}
-
-          <div class="content">
-            <div class="summary-card">
-              <div class="summary-card__icon">${ICONS.cart}</div>
-              <div class="summary-card__main">
-                <div class="summary-card__row1">
-                  <h2 class="summary-card__title">Кошик</h2>
-                  <a href="index.html" class="summary-card__edit">${ICONS.pencil} Редагувати</a>
-                </div>
-                <p class="summary-card__sub">${sel.length} ${plural(sel.length, "товар", "товари", "товарів")}</p>
-                <div class="summary-card__sum">${fmt(total)}</div>
-              </div>
-              <div class="summary-card__thumbs">
-                ${sel
-                  .slice(0, 2)
-                  .map((p) => `<div class="summary-card__thumb">${productImage(p.image)}</div>`)
-                  .join("")}
-              </div>
+          <div class="blue-header">
+            ${statusBar()}
+            <div class="blue-header__nav">
+              <button class="blue-header__back" data-action="back">${ICONS.arrow_back}</button>
+              <h1 class="blue-header__title">Ваше замовлення</h1>
             </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-card__icon">${ICONS.cart_white}</div>
+            <h2 class="summary-card__title">Кошик</h2>
+            <a href="index.html" class="summary-card__edit">${ICONS.pencil} Редагувати</a>
+            <p class="summary-card__sub">${sel.length} ${plural(sel.length, "товар", "товари", "товарів")}</p>
+            <div class="summary-card__sum">${fmtSum(total)}</div>
+            <div class="summary-card__thumbs">
+              ${sel.slice(0,2).map(p => `<div class="summary-card__thumb"><img src="${p.image}" alt=""></div>`).join("")}
+            </div>
+          </div>
+
+          <div class="content" style="padding-top:16px">
 
             <div class="section">
               <p class="section-label">Оплата</p>
@@ -57,37 +55,34 @@
                   <div class="segmented__opt" data-active="${isParts}" data-pay="parts">Частинами</div>
                   <div class="segmented__opt" data-active="${!isParts}" data-pay="full">Повністю</div>
                 </div>
-
-                ${
-                  isParts
-                    ? sel
-                        .map(
-                          (p) => `
-                  <div class="installment-row">
-                    <div class="installment-row__paw">${ICONS.paw}</div>
-                    <div class="installment-row__main">
-                      <p class="installment-row__name">${p.name.replace(/(.{20}).+/, "$1...")}</p>
-                      <div class="installment-row__sum">
-                        <b>${fmt(Math.round((p.price * p.qty) / p.installments))}</b>
-                        <span class="x">×</span>
-                        <span>${p.installments} ${plural(p.installments, "платіж", "платежі", "платежів")}</span>
+                ${isParts
+                  ? sel.map(p => `
+                    <div class="install-row">
+                      <div class="install-row__paw">${ICONS.paw.replace('20px','32px')}</div>
+                      <div class="install-row__main">
+                        <p class="install-row__name">${p.name.length > 25 ? p.name.slice(0,25)+'…' : p.name}</p>
+                        <div class="install-row__sum">
+                          ${fmtSum(Math.round((p.price * p.qty) / p.installments))}
+                          <span class="x">×</span>${p.installments} ${plural(p.installments,"платіж","платежі","платежів")}
+                        </div>
+                      </div>
+                      <div class="install-row__chevron">${ICONS.chevron_right}</div>
+                    </div>`).join("")
+                  : `
+                    <div class="payment-row">
+                      <div class="payment-row__icon">
+                        <svg width="32" height="22" viewBox="0 0 32 22" fill="none">
+                          <rect x="0.5" y="0.5" width="31" height="21" rx="4" fill="#0E0E0E" stroke="#000" stroke-opacity="0.05"/>
+                          <rect x="0.5" y="4" width="31" height="5" fill="#222"/>
+                          <rect x="3" y="14" width="6" height="4" rx="0.5" fill="#666"/>
+                        </svg>
+                      </div>
+                      <div class="payment-row__main">
+                        <p class="payment-row__title">Оплата карткою mono</p>
+                        <p class="payment-row__sub">З чорної або білої картки</p>
                       </div>
                     </div>
-                    <div class="installment-row__chevron">${ICONS.chevron}</div>
-                  </div>
-                `
-                        )
-                        .join("")
-                    : `
-                  <div class="payment-row">
-                    <div class="payment-row__icon">${ICONS.card}</div>
-                    <div class="payment-row__main">
-                      <p class="payment-row__title">Оплата карткою mono</p>
-                      <p class="payment-row__sub">З чорної або білої картки</p>
-                    </div>
-                  </div>
-                `
-                }
+                  `}
               </div>
             </div>
 
@@ -98,54 +93,46 @@
                   <div class="segmented__opt" data-active="${!isCourier}" data-del="department">Відділення</div>
                   <div class="segmented__opt" data-active="${isCourier}" data-del="courier">Кур'єр</div>
                 </div>
-
-                <div class="address-row" id="deliveryRow">
+                <div class="delivery-row" id="deliveryRow">
                   <div class="np-icon">${ICONS.np}</div>
-                  <div class="address-row__main">
-                    ${
-                      isCourier
-                        ? `<p class="address-row__title">${addr.street}</p><p class="address-row__sub">${addr.city}</p>`
-                        : `<p class="address-row__title">${dep.city}, Відділення №${dep.number}</p><p class="address-row__sub">${dep.street}</p>`
-                    }
+                  <div class="delivery-row__main">
+                    ${isCourier
+                      ? `<p class="delivery-row__title">${addr.street}</p><p class="delivery-row__sub">${addr.city}</p>`
+                      : `<p class="delivery-row__title">${dep.city}, Відділення №${dep.number}</p><p class="delivery-row__sub">${dep.street}</p>`}
                   </div>
-                  <div class="address-row__chevron">${ICONS.chevron}</div>
+                  <div class="chevron-blue">${ICONS.chevron_right}</div>
                 </div>
-
-                ${
-                  isCourier
-                    ? `<div class="delivery-note">🤝 ${addr.note || "Безкоштовно у квартиру"}</div>`
-                    : ""
-                }
+                ${isCourier ? `<div class="delivery-note">🤝 ${addr.note || "Безкоштовно у квартиру"}</div>` : ""}
               </div>
             </div>
 
             <div class="section">
               <p class="section-label">Отримувач</p>
-              <div class="card recipient-row" id="recipRow">
-                <div class="avatar avatar--${recip.avatar}">${recip.avatar === "photo" ? "👤" : recip.initials || ""}</div>
+              <div class="card recipient-row" id="recipRow" style="cursor:pointer">
+                <div class="avatar avatar--${recip.avatar}">${recip.avatar === "photo" ? `<img src="assets/icons/recipient_mykola.png" alt="">` : (recip.initials || "")}</div>
                 <div class="recipient-row__main">
                   <p class="recipient-row__name">${recip.name}</p>
                   <p class="recipient-row__phone">${recip.phone}</p>
                 </div>
-                <div class="address-row__chevron">${ICONS.chevron}</div>
+                <div class="chevron-blue">${ICONS.chevron_right}</div>
               </div>
             </div>
 
-            ${
-              isParts
-                ? `<div class="checkout-disclaimer">
-                ${ICONS.info}
+            ${isParts ? `
+              <div class="checkout-disclaimer">
+                <span class="checkout-disclaimer__icon">${ICONS.info}</span>
                 <span>Сплачуючи частинами, ви підписуєте <b>паспорти кредитів</b> для всіх товарів</span>
-              </div>`
-                : ""
-            }
+              </div>` : ""}
+
+            <div style="height:24px"></div>
           </div>
 
-          <div class="bottom-bar">
+          <div class="cta-area">
             <button class="btn" id="ctaBtn">${ctaText}</button>
           </div>
 
-          <!-- card picker sheet -->
+          <div class="home-indicator"></div>
+
           <div class="sheet-backdrop" id="backdrop"></div>
           <div class="sheet" id="sheet">
             <div class="sheet__handle"></div>
@@ -153,50 +140,37 @@
               <h2 class="sheet__title">Підтвердіть оплату</h2>
               <button class="sheet__close" data-sheet="close">Згорнути</button>
             </div>
-
-            ${["black", "white"]
-              .map((c) => {
-                const card = c === "black"
-                  ? { name: "Чорна картка", balance: "50 450.25 ₴" }
-                  : { name: "Біла картка", balance: "29 191.87 ₴" };
-                return `
-              <div class="card-option" data-card="${c}">
-                <div class="card-option__art card-option__art--${c}">
-                  <span class="card-option__art-currency">₴</span>
-                  <span class="card-option__art-mark">${c === "black" ? "<span style='color:#EB001B'>●</span><span style='color:#F79E1B;margin-left:-3px'>●</span>" : "VISA"}</span>
-                </div>
-                <div class="card-option__main">
-                  <p class="card-option__name">${card.name}</p>
-                  <p class="card-option__balance">${card.balance}</p>
-                </div>
-                <div class="radio" data-checked="${state.card === c}"></div>
-              </div>`;
-              })
-              .join("")}
-
+            ${["black","white"].map(c => {
+              const card = c === "black"
+                ? { name: "Чорна картка", balance: "50 450.25 ₴" }
+                : { name: "Біла картка", balance: "29 191.87 ₴" };
+              return `
+                <div class="card-option" data-card="${c}">
+                  <div class="card-option__art card-option__art--${c}">
+                    <span class="card-option__chip"></span>
+                    <span class="card-option__currency">₴</span>
+                    ${c === "black" ? `<span class="card-option__brand card-option__brand--mc"></span>` : `<span class="card-option__brand">${ICONS.visa_logo}</span>`}
+                  </div>
+                  <div class="card-option__main">
+                    <p class="card-option__name">${card.name}</p>
+                    <p class="card-option__balance">${card.balance}</p>
+                  </div>
+                  <div class="radio" data-checked="${state.card === c}"></div>
+                </div>`;
+            }).join("")}
             <div class="sheet-info">
               ${ICONS.info}
               <span>Зведена платіжна інструкція оплати</span>
             </div>
-
-            <button class="btn" id="paySheetBtn">Сплатити повністю: ${fmt(total)}</button>
+            <button class="btn" id="paySheetBtn">Сплатити повністю: ${fmtSum(total)}</button>
           </div>
         `;
-      }
-
-      function plural(n, one, few, many) {
-        const mod10 = n % 10;
-        const mod100 = n % 100;
-        if (mod10 === 1 && mod100 !== 11) return one;
-        if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
-        return many;
       }
 
       function openSheet() {
         document.getElementById("backdrop").dataset.open = "true";
         document.getElementById("sheet").dataset.open = "true";
       }
-
       function closeSheet() {
         document.getElementById("backdrop").dataset.open = "false";
         document.getElementById("sheet").dataset.open = "false";
@@ -205,76 +179,32 @@
       function showProcessing() {
         const overlay = document.createElement("div");
         overlay.className = "processing-overlay";
-        overlay.innerHTML = `
-          <div class="processing-spinner">
-            <div class="spinner"></div>
-            <div class="processing-spinner__text">Обробка платежу...</div>
-          </div>`;
+        overlay.innerHTML = `<div class="processing-spinner-card"><div class="spinner"></div><div class="processing-text">Обробка платежу…</div></div>`;
         document.body.appendChild(overlay);
         requestAnimationFrame(() => (overlay.dataset.open = "true"));
-        setTimeout(() => {
-          location.href = "success.html";
-        }, 1400);
+        setTimeout(() => (location.href = "success.html"), 1400);
       }
 
       document.addEventListener("click", (e) => {
         const pay = e.target.closest("[data-pay]");
-        if (pay) {
-          state.payment = pay.getAttribute("data-pay");
-          saveState(state);
-          render();
-          return;
-        }
+        if (pay) { state.payment = pay.getAttribute("data-pay"); saveState(state); render(); return; }
         const del = e.target.closest("[data-del]");
-        if (del) {
-          state.delivery = del.getAttribute("data-del");
-          saveState(state);
-          render();
+        if (del) { state.delivery = del.getAttribute("data-del"); saveState(state); render(); return; }
+        if (e.target.closest("#deliveryRow")) {
+          location.href = state.delivery === "courier" ? "address.html" : "delivery.html"; return;
+        }
+        if (e.target.closest("#recipRow")) { location.href = "recipient.html"; return; }
+        if (e.target.closest("#ctaBtn")) {
+          if (state.payment === "parts") showProcessing();
+          else openSheet();
           return;
         }
-        const drow = e.target.closest("#deliveryRow");
-        if (drow) {
-          location.href = state.delivery === "courier" ? "address.html" : "delivery.html";
-          return;
-        }
-        const rrow = e.target.closest("#recipRow");
-        if (rrow) {
-          location.href = "recipient.html";
-          return;
-        }
-        const cta = e.target.closest("#ctaBtn");
-        if (cta) {
-          if (state.payment === "parts") {
-            showProcessing();
-          } else {
-            openSheet();
-          }
-          return;
-        }
-        const sheetClose = e.target.closest('[data-sheet="close"]');
-        if (sheetClose) {
-          closeSheet();
-          return;
-        }
+        if (e.target.closest('[data-sheet="close"]')) { closeSheet(); return; }
         const back = e.target.closest("#backdrop");
-        if (back && back.dataset.open === "true") {
-          closeSheet();
-          return;
-        }
+        if (back && back.dataset.open === "true") { closeSheet(); return; }
         const cardOpt = e.target.closest("[data-card]");
-        if (cardOpt) {
-          state.card = cardOpt.getAttribute("data-card");
-          saveState(state);
-          render();
-          openSheet();
-          return;
-        }
-        const paySheet = e.target.closest("#paySheetBtn");
-        if (paySheet) {
-          closeSheet();
-          showProcessing();
-          return;
-        }
+        if (cardOpt) { state.card = cardOpt.getAttribute("data-card"); saveState(state); render(); openSheet(); return; }
+        if (e.target.closest("#paySheetBtn")) { closeSheet(); showProcessing(); return; }
       });
 
       render();
