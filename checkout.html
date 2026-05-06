@@ -26,6 +26,10 @@
           ? `Сплатити частинами: ${fmtSum(firstInstallment())}`
           : "Продовжити";
 
+        const recipAvatar = recip.avatar === "photo"
+          ? `<img src="assets/icons/recipient_avatar_32.png" alt="">`
+          : `<span>${recip.initials || ""}</span>`;
+
         document.getElementById("app").innerHTML = `
           <div class="blue-header">
             ${statusBar()}
@@ -36,9 +40,12 @@
           </div>
 
           <div class="summary-card">
-            <div class="summary-card__icon">${ICONS.cart_white}</div>
+            <div class="summary-card__icon"><img src="assets/icons/cart_white.svg" alt="" style="width:10px;height:10px"></div>
             <h2 class="summary-card__title">Кошик</h2>
-            <a href="index.html" class="summary-card__edit">${ICONS.pencil} Редагувати</a>
+            <a href="index.html" class="summary-card__edit">
+              <img src="assets/icons/edit_pencil.svg" alt="" style="width:12px;height:12px">
+              Редагувати
+            </a>
             <p class="summary-card__sub">${sel.length} ${plural(sel.length, "товар", "товари", "товарів")}</p>
             <div class="summary-card__sum">${fmtSum(total)}</div>
             <div class="summary-card__thumbs">
@@ -66,7 +73,7 @@
                           <span class="x">×</span>${p.installments} ${plural(p.installments,"платіж","платежі","платежів")}
                         </div>
                       </div>
-                      <div class="install-row__chevron">${ICONS.chevron_right}</div>
+                      <div class="install-row__chevron"><img src="assets/icons/chevron_right.svg" alt="" style="width:20px;height:20px"></div>
                     </div>`).join("")
                   : `
                     <div class="payment-row">
@@ -94,13 +101,13 @@
                   <div class="segmented__opt" data-active="${isCourier}" data-del="courier">Кур'єр</div>
                 </div>
                 <div class="delivery-row" id="deliveryRow">
-                  <div class="np-icon">${ICONS.np}</div>
+                  <div class="np-icon-img"><img src="assets/icons/np_round_32.png" alt=""></div>
                   <div class="delivery-row__main">
                     ${isCourier
                       ? `<p class="delivery-row__title">${addr.street}</p><p class="delivery-row__sub">${addr.city}</p>`
                       : `<p class="delivery-row__title">${dep.city}, Відділення №${dep.number}</p><p class="delivery-row__sub">${dep.street}</p>`}
                   </div>
-                  <div class="chevron-blue">${ICONS.chevron_right}</div>
+                  <div class="chevron-blue"><img src="assets/icons/chevron_right.svg" alt="" style="width:20px;height:20px"></div>
                 </div>
                 ${isCourier ? `<div class="delivery-note">🤝 ${addr.note || "Безкоштовно у квартиру"}</div>` : ""}
               </div>
@@ -108,13 +115,13 @@
 
             <div class="section">
               <p class="section-label">Отримувач</p>
-              <div class="card recipient-row" id="recipRow" style="cursor:pointer">
-                <div class="avatar avatar--${recip.avatar}">${recip.avatar === "photo" ? `<img src="assets/icons/recipient_mykola.png" alt="">` : (recip.initials || "")}</div>
+              <div class="card recipient-row" id="recipRow">
+                <div class="avatar avatar--${recip.avatar}">${recipAvatar}</div>
                 <div class="recipient-row__main">
                   <p class="recipient-row__name">${recip.name}</p>
                   <p class="recipient-row__phone">${recip.phone}</p>
                 </div>
-                <div class="chevron-blue">${ICONS.chevron_right}</div>
+                <div class="chevron-blue"><img src="assets/icons/chevron_right.svg" alt="" style="width:20px;height:20px"></div>
               </div>
             </div>
 
@@ -180,7 +187,7 @@
         const overlay = document.createElement("div");
         overlay.className = "processing-overlay";
         overlay.innerHTML = `<div class="processing-spinner-card"><div class="spinner"></div><div class="processing-text">Обробка платежу…</div></div>`;
-        document.body.appendChild(overlay);
+        document.getElementById("app").appendChild(overlay);
         requestAnimationFrame(() => (overlay.dataset.open = "true"));
         setTimeout(() => (location.href = "success.html"), 1400);
       }
