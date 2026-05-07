@@ -1216,10 +1216,6 @@ img { display: block; max-width: 100%; }
   cursor: pointer;
 }
 
-.addr-card[data-active="true"] {
-  outline: 2px solid var(--blue);
-  outline-offset: -2px;
-}
 
 .addr-card__icon {
   width: 40px;
@@ -1250,7 +1246,7 @@ img { display: block; max-width: 100%; }
 
 .addr-card--add {
   padding: 16px;
-  align-items: center;
+  justify-content: center;
   gap: 12px;
 }
 
@@ -1263,7 +1259,7 @@ img { display: block; max-width: 100%; }
 
 .addr-card__add-text {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: -0.32px;
   color: var(--text);
   line-height: 24px;
