@@ -484,13 +484,29 @@ img { display: block; max-width: 100%; }
 
 .check[data-checked="true"] svg { opacity: 1; }
 
-/* ============ checkout: blue header (with summary card embedded) ============ */
+/* ============ checkout: blue header with sticky shrinking ============ */
+
+.checkout-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+.checkout-content {
+  overflow: visible !important;
+  flex: none !important;
+}
 
 .blue-header {
-  background: var(--grad-header);
+  position: sticky;
+  top: 0;
   height: 156px;
-  position: relative;
+  z-index: 5;
   flex-shrink: 0;
+  /* gradient covers only top 96px (the "shrunken" baseline). below that is transparent so card peeks through. when header shrinks to 96, gradient fills entirely. */
+  background: linear-gradient(180deg, #3395FF 0%, #007AFF 100%) 0 0 / 100% 96px no-repeat;
+  transition: height 0.06s linear;
 }
 
 .blue-header__nav {
@@ -529,7 +545,7 @@ img { display: block; max-width: 100%; }
   padding: 16px;
   margin: -56px 16px 0;
   position: relative;
-  z-index: 2;
+  z-index: 10;
   display: grid;
   grid-template-columns: 20px 1fr auto;
   grid-template-rows: auto auto auto;
@@ -880,9 +896,9 @@ img { display: block; max-width: 100%; }
 .cta-area {
   padding: 16px 16px 48px;
   flex-shrink: 0;
-  position: sticky;
-  bottom: 0;
-  background: linear-gradient(180deg, transparent 0%, var(--bg) 30%);
+  background: var(--bg);
+  position: relative;
+  z-index: 20;
 }
 
 .btn {
