@@ -1224,6 +1224,26 @@ img { display: block; max-width: 100%; }
 }
 .addr-card__icon img { width: 100%; height: 100%; display: block; object-fit: contain; }
 
+/* round avatar variant for recipient list (photo or initials) */
+.addr-card__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ccc;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.154px;
+}
+.addr-card__avatar img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.addr-card__avatar--orange { background: #F4A93A; }
+.addr-card__avatar--purple { background: #8C7BFF; }
+
 .addr-card__main { flex: 1; min-width: 0; }
 
 .addr-card__title {

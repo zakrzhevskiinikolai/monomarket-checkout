@@ -5,18 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#F4F4F4" />
     <title>Отримувач · monoМаркет</title>
-    <link rel="stylesheet" href="styles.css?v=4" />
+    <link rel="stylesheet" href="styles.css?v=5" />
   </head>
   <body>
     <div class="app" id="app"></div>
 
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
     <script>
-      function avatarBlock(r) {
+      function avatarInner(r) {
         if (r.avatar === "photo") {
-          return `<img src="assets/icons/recipient_mykola.png" alt="">`;
+          return `<img src="assets/icons/recipient_avatar_32.png" alt="">`;
         }
         return `<span>${r.initials || ""}</span>`;
+      }
+
+      function recipientCard(r) {
+        const cls = r.avatar === "orange" ? "addr-card__avatar--orange"
+                  : r.avatar === "purple" ? "addr-card__avatar--purple"
+                  : "";
+        return `
+          <div class="addr-card" data-pick="${r.id}">
+            <div class="addr-card__avatar ${cls}">${avatarInner(r)}</div>
+            <div class="addr-card__main">
+              <p class="addr-card__title">${r.name}</p>
+              <p class="addr-card__sub">${r.phone}</p>
+            </div>
+          </div>`;
       }
 
       function render() {
@@ -26,26 +40,16 @@
             <button class="header-back__btn" data-action="back">${ICONS.arrow_back}</button>
           </div>
 
-          <h1 class="app-title" style="padding:0 16px;margin-bottom:16px">Отримувач</h1>
+          <h1 class="app-title" style="padding:0 16px;margin-bottom:24px">Отримувач</h1>
 
           <div class="content">
-            ${state.recipients.map(r => `
-              <div class="list-card" data-pick="${r.id}" data-active="${r.id === state.selectedRecipientId}">
-                <div class="list-card__avatar list-card__avatar--${r.avatar}">
-                  ${avatarBlock(r)}
-                </div>
-                <div class="list-card__main">
-                  <p class="list-card__name">${r.name}</p>
-                  <p class="list-card__sub">${r.phone}</p>
-                </div>
-              </div>`).join("")}
+            ${state.recipients.map(recipientCard).join("")}
 
-            <div class="list-card" id="addBtn">
-              <div class="list-card__avatar list-card__avatar--add">+</div>
-              <div class="list-card__main">
-                <p class="list-card__name">Додати нового отримувача</p>
-              </div>
+            <div class="addr-card addr-card--add" id="addBtn">
+              <img src="assets/icons/plus_circle.svg" alt="" class="addr-card__plus">
+              <span class="addr-card__add-text">Додати нового отримувача</span>
             </div>
+            <div style="height:24px"></div>
           </div>
           <div class="home-indicator"></div>
         `;
