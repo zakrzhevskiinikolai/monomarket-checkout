@@ -529,8 +529,8 @@ img { display: block; max-width: 100%; }
 .checkout-content {
   overflow: visible !important;
   flex: none !important;
-  position: relative;
-  z-index: 1;
+  /* no position/z-index — sections stay non-positioned in-flow,
+     they paint at step 3 (below all positioned siblings like bg z=5) */
 }
 
 .blue-header__nav {
