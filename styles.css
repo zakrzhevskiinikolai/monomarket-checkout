@@ -1132,12 +1132,12 @@ img { display: block; max-width: 100%; }
   position: relative;
 }
 
-.dl-item + .dl-item::before {
+.dl-item::after {
   content: "";
   position: absolute;
   left: 68px;
   right: 16px;
-  top: 0;
+  bottom: 0;
   height: 1px;
   background: #EFECEC;
 }
@@ -1156,15 +1156,30 @@ img { display: block; max-width: 100%; }
 
 .dl-item__icon img { width: 24px; height: 24px; object-fit: contain; }
 
-.dl-item__main { flex: 1; min-width: 0; }
+.dl-item__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dl-item__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
 
 .dl-item__title {
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.32px;
   color: var(--text);
-  margin: 0;
   line-height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dl-item__addr {
@@ -1174,6 +1189,9 @@ img { display: block; max-width: 100%; }
   letter-spacing: -0.154px;
   margin: 0;
   line-height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dl-item__weight {
@@ -1182,6 +1200,7 @@ img { display: block; max-width: 100%; }
   color: var(--text-secondary);
   flex-shrink: 0;
   letter-spacing: 0;
+  line-height: 24px;
 }
 
 /* ============ recipient/address list ============ */

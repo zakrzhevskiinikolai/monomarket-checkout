@@ -35,11 +35,11 @@
           <h1 class="app-title" style="padding:0 16px">
             <span style="display:flex;align-items:center;gap:10px;">
               Доставка Нова пошта
-              <span class="np-icon" style="width:24px;height:24px">${ICONS.np}</span>
+              <img src="assets/icons/np_round_24.png" alt="" style="width:24px;height:24px;display:block">
             </span>
           </h1>
 
-          <a class="subtitle-link" href="#" id="cityChange">${city}<span style="display:inline-flex;width:14px;height:14px;align-items:center;justify-content:center">${ICONS.pencil}</span></a>
+          <a class="subtitle-link" href="#" id="cityChange">${city}<img src="assets/icons/edit_pencil.svg" alt="" style="width:14px;height:14px;display:inline-block;vertical-align:middle"></a>
 
           <div class="search">
             ${ICONS.search}
@@ -80,11 +80,13 @@
         return `
           <div class="dl-item" data-pick="${d.id}">
             <div class="dl-item__icon"><img src="${DEPT_ICONS[d.icon]}" alt=""></div>
-            <div class="dl-item__main">
-              <p class="dl-item__title">${title}</p>
+            <div class="dl-item__body">
+              <div class="dl-item__top">
+                <span class="dl-item__title">${title}</span>
+                <span class="dl-item__weight">${d.weight}</span>
+              </div>
               <p class="dl-item__addr">${d.street}</p>
             </div>
-            <div class="dl-item__weight">${d.weight}</div>
           </div>`;
       }
 
