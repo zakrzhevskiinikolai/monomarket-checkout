@@ -484,29 +484,51 @@ img { display: block; max-width: 100%; }
 
 .check[data-checked="true"] svg { opacity: 1; }
 
-/* ============ checkout: blue header with sticky shrinking ============ */
+/* ============ checkout: 2-layer shrinking header ============ */
 
+/* gradient layer — absolute, behind everything; shrinks 160→96 on scroll */
+.checkout-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 160px;
+  background: var(--grad-header);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* nav layer — absolute, always on top; 96px fixed */
+.checkout-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 96px;
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.checkout-nav .statusbar { color: #fff; }
+.checkout-nav .statusbar__icons { color: #fff; }
+
+/* scrollable area — under the absolute headers */
 .checkout-scroll {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   position: relative;
+  z-index: 1;
+}
+
+/* spacer at top of scroll, height = nav (96), so first content sits at y=96 */
+.checkout-scroll__spacer {
+  height: 96px;
 }
 
 .checkout-content {
   overflow: visible !important;
   flex: none !important;
-}
-
-.blue-header {
-  position: sticky;
-  top: 0;
-  height: 156px;
-  z-index: 5;
-  flex-shrink: 0;
-  /* gradient covers only top 96px (the "shrunken" baseline). below that is transparent so card peeks through. when header shrinks to 96, gradient fills entirely. */
-  background: linear-gradient(180deg, #3395FF 0%, #007AFF 100%) 0 0 / 100% 96px no-repeat;
-  transition: height 0.06s linear;
 }
 
 .blue-header__nav {
@@ -543,7 +565,7 @@ img { display: block; max-width: 100%; }
   border-radius: var(--r-card);
   box-shadow: var(--sh-card);
   padding: 16px;
-  margin: -56px 16px 0;
+  margin: 0 16px;
   position: relative;
   z-index: 10;
   display: grid;
