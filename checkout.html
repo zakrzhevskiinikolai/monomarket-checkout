@@ -65,7 +65,7 @@
                 ${isParts
                   ? sel.map(p => `
                     <div class="install-row">
-                      <div class="install-row__paw">${ICONS.paw.replace('20px','32px')}</div>
+                      <div class="install-row__paw"><img src="assets/icons/paw_install_32.svg" alt=""></div>
                       <div class="install-row__main">
                         <p class="install-row__name">${p.name.length > 25 ? p.name.slice(0,25)+'…' : p.name}</p>
                         <div class="install-row__sum">
@@ -127,7 +127,7 @@
 
             ${isParts ? `
               <div class="checkout-disclaimer">
-                <span class="checkout-disclaimer__icon">${ICONS.info}</span>
+                <span class="checkout-disclaimer__icon"><img src="assets/icons/info_filled.svg" alt="" style="width:16px;height:16px"></span>
                 <span>Сплачуючи частинами, ви підписуєте <b>паспорти кредитів</b> для всіх товарів</span>
               </div>` : ""}
 
