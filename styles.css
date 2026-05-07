@@ -512,13 +512,13 @@ img { display: block; max-width: 100%; }
 .checkout-nav .statusbar { color: #fff; }
 .checkout-nav .statusbar__icons { color: #fff; }
 
-/* scrollable area — under the absolute headers */
+/* scrollable area — under the absolute headers.
+   no z-index — must not create a new stacking context, so card (z:10) can stack above bg (z:5) but below nav (z:20). */
 .checkout-scroll {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   position: relative;
-  z-index: 1;
 }
 
 /* spacer at top of scroll, height = nav (96), so first content sits at y=96 */
