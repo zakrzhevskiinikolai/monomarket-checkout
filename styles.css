@@ -529,6 +529,8 @@ img { display: block; max-width: 100%; }
 .checkout-content {
   overflow: visible !important;
   flex: none !important;
+  position: relative;
+  z-index: 1;
 }
 
 .blue-header__nav {
