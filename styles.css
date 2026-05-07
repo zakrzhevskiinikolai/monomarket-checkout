@@ -807,9 +807,18 @@ img { display: block; max-width: 100%; }
 .recipient-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   padding: 0;
   cursor: pointer;
+}
+
+/* recipient card: bigger padding + larger avatar to feel spacious */
+.card.recipient-row {
+  padding: 20px 16px;
+}
+.card.recipient-row .avatar {
+  width: 40px;
+  height: 40px;
 }
 
 .avatar {
