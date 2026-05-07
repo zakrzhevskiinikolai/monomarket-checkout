@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#3395FF" />
     <title>Чекаут · monoМаркет</title>
-    <link rel="stylesheet" href="styles.css?v=7" />
+    <link rel="stylesheet" href="styles.css?v=8" />
   </head>
   <body>
     <div class="app app--blue-header" id="app"></div>
 
-    <script src="app.js?v=7"></script>
+    <script src="app.js?v=8"></script>
     <script>
       function render() {
         // preserve scroll position to avoid jump on tab toggle
@@ -211,7 +211,18 @@
         const back = e.target.closest("#backdrop");
         if (back && back.dataset.open === "true") { closeSheet(); return; }
         const cardOpt = e.target.closest("[data-card]");
-        if (cardOpt) { state.card = cardOpt.getAttribute("data-card"); saveState(state); render(); return; }
+        if (cardOpt) {
+          const picked = cardOpt.getAttribute("data-card");
+          state.card = picked;
+          saveState(state);
+          // targeted update of radio icons — no re-render, no flicker
+          document.querySelectorAll(".card-option").forEach((opt) => {
+            const oC = opt.getAttribute("data-card");
+            const radio = opt.querySelector(".card-option__radio");
+            if (radio) radio.src = `assets/icons/${oC === picked ? "radio_on" : "radio_off"}.svg`;
+          });
+          return;
+        }
         if (e.target.closest("#paySheetBtn")) { location.href = "success.html"; return; }
       });
 
