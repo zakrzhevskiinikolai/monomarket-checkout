@@ -1,6 +1,6 @@
 /* ====== shared state ====== */
 
-const STORAGE_KEY = "monomarket_prototype_v2";
+const STORAGE_KEY = "monomarket_prototype_v3";
 
 const DEFAULT_STATE = {
   products: [
