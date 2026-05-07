@@ -650,8 +650,8 @@ img { display: block; max-width: 100%; }
 .payment-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 4px 0;
+  gap: 16px;
+  padding: 0;
 }
 
 .payment-row__icon {
@@ -810,15 +810,6 @@ img { display: block; max-width: 100%; }
   gap: 16px;
   padding: 0;
   cursor: pointer;
-}
-
-/* recipient card: bigger padding + larger avatar to feel spacious */
-.card.recipient-row {
-  padding: 20px 16px;
-}
-.card.recipient-row .avatar {
-  width: 40px;
-  height: 40px;
 }
 
 .avatar {
