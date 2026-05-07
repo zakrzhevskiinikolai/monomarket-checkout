@@ -5,14 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#3395FF" />
     <title>Чекаут · monoМаркет</title>
-    <link rel="stylesheet" href="styles.css?v=6" />
+    <link rel="stylesheet" href="styles.css?v=7" />
   </head>
   <body>
     <div class="app app--blue-header" id="app"></div>
 
-    <script src="app.js?v=6"></script>
+    <script src="app.js?v=7"></script>
     <script>
       function render() {
+        // preserve scroll position to avoid jump on tab toggle
+        const prevContent = document.querySelector(".content");
+        const savedContentScroll = prevContent ? prevContent.scrollTop : 0;
+        const savedWindowScroll = window.scrollY;
+        const sheetWasOpen = document.getElementById("sheet")?.dataset.open === "true";
+
         const sel = selectedProducts();
         if (sel.length === 0) { location.href = "index.html"; return; }
         const total = cartTotal();
@@ -143,31 +149,36 @@
               <h2 class="sheet__title">Підтвердіть оплату</h2>
               <button class="sheet__close" data-sheet="close">Згорнути</button>
             </div>
+
             ${["black","white"].map(c => {
-              const card = c === "black"
-                ? { name: "Чорна картка", balance: "50 450.25 ₴" }
-                : { name: "Біла картка", balance: "29 191.87 ₴" };
+              const data = c === "black"
+                ? { name: "Чорна картка", balance: "50 450.25 ₴", img: "assets/icons/card_black_mc.png" }
+                : { name: "Біла картка", balance: "29 191.87 ₴", img: "assets/icons/card_white_visa.png" };
+              const checked = state.card === c;
               return `
                 <div class="card-option" data-card="${c}">
-                  <div class="card-option__art card-option__art--${c}">
-                    <span class="card-option__chip"></span>
-                    <span class="card-option__currency">₴</span>
-                    ${c === "black" ? `<span class="card-option__brand card-option__brand--mc"></span>` : `<span class="card-option__brand">${ICONS.visa_logo}</span>`}
-                  </div>
+                  <div class="card-option__art"><img src="${data.img}" alt=""></div>
                   <div class="card-option__main">
-                    <p class="card-option__name">${card.name}</p>
-                    <p class="card-option__balance">${card.balance}</p>
+                    <p class="card-option__name">${data.name}</p>
+                    <p class="card-option__balance">${data.balance}</p>
                   </div>
-                  <div class="radio" data-checked="${state.card === c}"></div>
+                  <img class="card-option__radio" src="assets/icons/${checked ? 'radio_on' : 'radio_off'}.svg" alt="">
                 </div>`;
             }).join("")}
+
             <div class="sheet-info">
-              ${ICONS.info}
+              <img src="assets/icons/info_grey.svg" alt="" style="width:16px;height:16px">
               <span>Зведена платіжна інструкція оплати</span>
             </div>
             <button class="btn" id="paySheetBtn">Сплатити повністю: ${fmtSum(total)}</button>
           </div>
         `;
+
+        // restore scroll
+        const newContent = document.querySelector(".content");
+        if (newContent) newContent.scrollTop = savedContentScroll;
+        window.scrollTo(0, savedWindowScroll);
+        if (sheetWasOpen) openSheet();
       }
 
       function openSheet() {
@@ -177,15 +188,6 @@
       function closeSheet() {
         document.getElementById("backdrop").dataset.open = "false";
         document.getElementById("sheet").dataset.open = "false";
-      }
-
-      function showProcessing() {
-        const overlay = document.createElement("div");
-        overlay.className = "processing-overlay";
-        overlay.innerHTML = `<div class="processing-spinner-card"><div class="spinner"></div><div class="processing-text">Обробка платежу…</div></div>`;
-        document.getElementById("app").appendChild(overlay);
-        requestAnimationFrame(() => (overlay.dataset.open = "true"));
-        setTimeout(() => (location.href = "success.html"), 1400);
       }
 
       document.addEventListener("click", (e) => {
@@ -198,16 +200,19 @@
         }
         if (e.target.closest("#recipRow")) { location.href = "recipient.html"; return; }
         if (e.target.closest("#ctaBtn")) {
-          if (state.payment === "parts") showProcessing();
-          else openSheet();
+          if (state.payment === "parts") {
+            location.href = "success.html";
+          } else {
+            openSheet();
+          }
           return;
         }
         if (e.target.closest('[data-sheet="close"]')) { closeSheet(); return; }
         const back = e.target.closest("#backdrop");
         if (back && back.dataset.open === "true") { closeSheet(); return; }
         const cardOpt = e.target.closest("[data-card]");
-        if (cardOpt) { state.card = cardOpt.getAttribute("data-card"); saveState(state); render(); openSheet(); return; }
-        if (e.target.closest("#paySheetBtn")) { closeSheet(); showProcessing(); return; }
+        if (cardOpt) { state.card = cardOpt.getAttribute("data-card"); saveState(state); render(); return; }
+        if (e.target.closest("#paySheetBtn")) { location.href = "success.html"; return; }
       });
 
       render();

@@ -1426,7 +1426,7 @@ img { display: block; max-width: 100%; }
   padding: 16px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   margin-bottom: 12px;
   cursor: pointer;
 }
@@ -1434,68 +1434,21 @@ img { display: block; max-width: 100%; }
 .card-option__art {
   width: 56px;
   height: 40px;
-  border-radius: 8px;
   flex-shrink: 0;
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 4px 6px;
-  overflow: hidden;
+}
+.card-option__art img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  border-radius: 8px;
 }
 
-.card-option__art--black {
-  background: var(--grad-card-black);
-  color: #fff;
-}
-
-.card-option__art--white {
-  background: var(--grad-card-white);
-  color: #000;
-}
-
-.card-option__chip {
-  position: absolute;
-  top: 4px;
-  left: 6px;
-  width: 14px;
-  height: 3px;
-  border-radius: 100px;
-  background: rgba(255, 255, 255, 0.7);
-}
-
-.card-option__art--white .card-option__chip { background: rgba(0, 0, 0, 0.4); }
-
-.card-option__currency {
-  font-family: -apple-system, "SF Pro Rounded", "SF Pro Display", system-ui, sans-serif;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.card-option__brand {
-  font-size: 9px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-}
-
-.card-option__brand--mc {
-  display: flex;
-  gap: -4px;
-}
-.card-option__brand--mc::before {
-  content: "";
-  width: 12px; height: 12px; border-radius: 50%;
-  background: #EB001B;
-  margin-right: -4px;
-}
-.card-option__brand--mc::after {
-  content: "";
-  width: 12px; height: 12px; border-radius: 50%;
-  background: #F79E1B;
-  opacity: 0.85;
-  mix-blend-mode: multiply;
+.card-option__radio {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: block;
 }
 
 .card-option__main { flex: 1; min-width: 0; }
