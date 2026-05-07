@@ -12,6 +12,17 @@
 
     <script src="app.js"></script>
     <script>
+      function addressCard(a) {
+        return `
+          <div class="addr-card" data-pick="${a.id}" data-active="${a.id === state.selectedAddressId}">
+            <div class="addr-card__icon"><img src="assets/icons/address_icon_40.png" alt=""></div>
+            <div class="addr-card__main">
+              <p class="addr-card__title">${a.street}${a.apt ? ', ' + a.apt : ''}</p>
+              <p class="addr-card__sub">${a.city}</p>
+            </div>
+          </div>`;
+      }
+
       function render() {
         document.getElementById("app").innerHTML = `
           ${statusBar()}
@@ -19,30 +30,16 @@
             <button class="header-back__btn" data-action="back">${ICONS.arrow_back}</button>
           </div>
 
-          <h1 class="app-title" style="padding:0 16px;margin-bottom:16px">Адреса доставки</h1>
+          <h1 class="app-title" style="padding:0 16px;margin-bottom:24px">Адреса доставки</h1>
 
           <div class="content">
-            ${state.addresses.map(a => `
-              <div class="list-card" data-pick="${a.id}" data-active="${a.id === state.selectedAddressId}">
-                <div class="list-card__avatar" style="background:var(--bg-blue-soft);color:var(--blue);">
-                  <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
-                    <path d="M11 19C11 19 17 13.5 17 9C17 5.7 14.3 3 11 3C7.7 3 5 5.7 5 9C5 13.5 11 19 11 19Z" stroke="currentColor" stroke-width="1.7"/>
-                    <circle cx="11" cy="9" r="2.3" stroke="currentColor" stroke-width="1.7"/>
-                  </svg>
-                </div>
-                <div class="list-card__main">
-                  <p class="list-card__name">${a.street}</p>
-                  <p class="list-card__sub">${a.city} · ${a.note}</p>
-                </div>
-                <div class="chevron-blue">${ICONS.chevron_right}</div>
-              </div>`).join("")}
+            ${state.addresses.map(addressCard).join("")}
 
-            <div class="list-card" id="addBtn">
-              <div class="list-card__avatar list-card__avatar--add">+</div>
-              <div class="list-card__main">
-                <p class="list-card__name">Додати нову адресу</p>
-              </div>
+            <div class="addr-card addr-card--add" id="addBtn">
+              <img src="assets/icons/plus_circle.svg" alt="" class="addr-card__plus">
+              <span class="addr-card__add-text">Додати нову адресу</span>
             </div>
+            <div style="height:24px"></div>
           </div>
           <div class="home-indicator"></div>
         `;

@@ -56,8 +56,8 @@ const DEFAULT_STATE = {
   payment: "full",
   delivery: "courier",
   addresses: [
-    { id: "a1", street: "вул. Старокозацька, 62А", city: "м. Дніпро", note: "Безкоштовно у квартиру" },
-    { id: "a2", street: "просп. Лесі Українки, 26", city: "м. Київ", note: "До дверей" },
+    { id: "a1", street: "вул. Старокозацька, 62А", apt: "12 пов", city: "м. Дніпро", note: "Безкоштовно у квартиру" },
+    { id: "a2", street: "вул. Пироговський шлях, 136", city: "м. Одеса", note: "До дверей" },
   ],
   selectedAddressId: "a1",
   departments: [

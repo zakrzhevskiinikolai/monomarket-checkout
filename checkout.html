@@ -100,7 +100,7 @@
                   <div class="np-icon-img"><img src="assets/icons/np_round_32.png" alt=""></div>
                   <div class="delivery-row__main">
                     ${isCourier
-                      ? `<p class="delivery-row__title">${addr.street}</p><p class="delivery-row__sub">${addr.city}</p>`
+                      ? `<p class="delivery-row__title">${addr.street}${addr.apt ? ', ' + addr.apt : ''}</p><p class="delivery-row__sub">${addr.city}</p>`
                       : `<p class="delivery-row__title">${dep.city}, Відділення №${dep.number}</p><p class="delivery-row__sub">${dep.street}</p>`}
                   </div>
                   <div class="chevron-blue"><img src="assets/icons/chevron_right.svg" alt="" style="width:20px;height:20px"></div>

@@ -1203,6 +1203,72 @@ img { display: block; max-width: 100%; }
   line-height: 24px;
 }
 
+/* ============ address cards (courier delivery) ============ */
+
+.addr-card {
+  background: #fff;
+  border-radius: var(--r-card);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.addr-card[data-active="true"] {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+}
+
+.addr-card__icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+.addr-card__icon img { width: 100%; height: 100%; display: block; object-fit: contain; }
+
+.addr-card__main { flex: 1; min-width: 0; }
+
+.addr-card__title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.32px;
+  color: var(--text);
+  margin: 0;
+  line-height: 24px;
+}
+
+.addr-card__sub {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  letter-spacing: -0.154px;
+  margin: 0;
+  line-height: 16px;
+}
+
+.addr-card--add {
+  padding: 16px;
+  align-items: center;
+  gap: 12px;
+}
+
+.addr-card__plus {
+  width: 24px;
+  height: 24px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.addr-card__add-text {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.32px;
+  color: var(--text);
+  line-height: 24px;
+}
+
 /* ============ recipient/address list ============ */
 
 .list-card {
