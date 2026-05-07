@@ -688,9 +688,11 @@ img { display: block; max-width: 100%; }
 .install-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 0;
+  gap: 16px;
+  padding: 0;
 }
+
+.install-row + .install-row { margin-top: 16px; }
 
 .install-row__paw {
   width: 32px;
